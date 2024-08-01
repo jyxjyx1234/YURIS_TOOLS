@@ -40,7 +40,7 @@ YSTB_GuessXorKey.exe ysbin_new/xxxxxx.ybn
 
 使用 ` read_YSTB_FILE.py`可以将文本提取到 `triline_text_ori`文件夹中。文本格式为三行文本，从上到下分别为原文、预翻译、最终翻译。其中[]里的数字为偏移标识，请勿改动。
 
-如果文件有加密，需要在代码开头的encrypt处更改密钥。
+如果文件有加密，会自动从 `Key.txt`读取密钥。
 
 ### 提取文本2
 
@@ -64,7 +64,7 @@ json文件在 `json_ori`文件夹中。
 
 使用 `import_YSTB_FILE.py`可以将三行文本中的译文导入到ybn文件中。
 
-同样，如果文件有加密，需要在代码开头的encrypt处更改密钥。
+同样，如果文件有加密，会自动从 `Key.txt`读取密钥。
 
 ### 封包
 
