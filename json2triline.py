@@ -29,6 +29,7 @@ for filename in filelist:
             if l[:4]=='TR2=':
                 print(trans)
                 ori_triline[p]="TR2="+trans+'\n'
+                p+=1
                 break
             p+=1
 

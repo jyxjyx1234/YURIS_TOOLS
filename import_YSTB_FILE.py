@@ -15,7 +15,7 @@ except:
 filelist = os.listdir(trans_path)
 
 for filename in filelist:
-    YSTB_f = YSTB_FILE(path=ori_path + filename.replace(".tra.txt", ""))
+    YSTB_f = YSTB_FILE(path=ori_path + filename.replace(".tra.txt", ""),encrypt=encrypt)
     trans_f = open(trans_path + filename, "r", encoding="utf8")
 
     for l in trans_f:
