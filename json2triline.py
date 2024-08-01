@@ -1,10 +1,11 @@
 from Lib import *
 import os, re
 
-ori_json_folder = "json_ori/"
-trans_folder = "json_trans/"
-ori_triline_folder = "triline_text_ori/"
-out_triline_folder = "triline_text_trans/"
+ori_json_folder = "json_ori\\"
+trans_folder = "json_trans\\"
+ori_triline_folder = "triline_text_ori\\"
+out_triline_folder = "triline_text_trans\\"
+os.makedirs(out_triline_folder,exist_ok=True)
 
 filelist = os.listdir(trans_folder)
 

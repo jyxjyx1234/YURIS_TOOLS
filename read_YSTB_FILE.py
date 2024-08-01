@@ -4,6 +4,7 @@ import os
 
 ori_path = "ysbin_new/"
 out_path = "triline_text_ori/"
+os.makedirs(out_path,exist_ok=True)
 
 try:
     key = open("Key.txt","r",encoding='utf8').readlines()

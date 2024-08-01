@@ -4,6 +4,7 @@ import os
 ori_path = "ysbin_new/"
 trans_path = "triline_text_trans/"
 out_path = "scr_trans/"
+os.makedirs(out_path,exist_ok=True)
 
 try:
     key = open("Key.txt","r",encoding='utf8').readlines()
