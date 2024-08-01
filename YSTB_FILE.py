@@ -142,8 +142,8 @@ class YSTB_FILE:
 
     def append_trans(self,command_offset:int,trans:str):
         offset = len(self.strs) + len(self.append_region)
+        #处理gbk不支持的符号
         trans = trans.replace("♪","").replace("#","＃").replace("〜","~").replace("@","＠")
-
 
         transdata = trans.encode(encoding='gbk')
 
