@@ -68,6 +68,22 @@ json文件在 `json_ori`文件夹中。
 
 同样，如果文件有加密，会自动从 `Key.txt`读取密钥。
 
+### 人名显示处理
+
+Yuris引擎中有文件定义了人名，如果不修改的话，对话中人名将无法正常显示。
+
+现在的效果：
+
+![1722575060988](image/README/1722575060988.png)
+
+正常效果：
+
+![1722575074786](image/README/1722575074786.png)
+
+按照“文件筛选”中同样的步骤找到这个文件。通常名为 `キャラ名定義.txt`或类似的名字，在 `userdefine`文件夹中。找到这个文件并按上面的操作还原文件名，创建一个名为 `name_define`的文件夹并放入该文件。
+
+使用 `change_name_define.py`可以转化该文件，自动放入 `scr_trans`和 `Release`文件夹中。
+
 ### 封包
 
 没有研究。祈祷游戏支持免封包吧。关于免封包的研究可以参考[Dir-A_Essays_MD/Reverse/[YU-RIS] 免封包处理/[YU-RIS] 免封包处理.md at d76a81f734d8e26ac9cbf226f2c20f3d921e68fd · Dir-A/Dir-A_Essays_MD (github.com)](https://github.com/Dir-A/Dir-A_Essays_MD/blob/d76a81f734d8e26ac9cbf226f2c20f3d921e68fd/Reverse/%5BYU-RIS%5D%20%E5%85%8D%E5%B0%81%E5%8C%85%E5%A4%84%E7%90%86/%5BYU-RIS%5D%20%E5%85%8D%E5%B0%81%E5%8C%85%E5%A4%84%E7%90%86.md)

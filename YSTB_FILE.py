@@ -156,3 +156,29 @@ class YSTB_FILE:
         self.append_region += transdata + b'\x00'
         self.commands[command_offset+4:command_offset+12] = list(to_bytes(length,4) + to_bytes(offset,4))
 
+class YSTB_NAMEDEF_FILE(YSTB_FILE):
+    def _read_command(self) -> list:
+        self.command_list:list[YSTB_command] = []
+        p = 0
+        while p < self.command_len:
+            command = YSTB_command(bytes(self.commands[p : p + 12]))
+            command.command_offset = p
+            if command.type() == "name_def":
+                self.command_list.append(command)
+            p += 12
+
+    def _append_new_namedef(self,command_offset:int,newdata:bytes):
+        offset = len(self.strs) + len(self.append_region)
+        length = len(newdata)
+        self.append_region += newdata + b'\x00'
+        self.commands[command_offset+4:command_offset+12] = list(to_bytes(length,4) + to_bytes(offset,4))
+
+    def changenamecharset(self):
+        for command in self.command_list:
+            command_offset = command.command_offset
+            command_type = command.type()
+            if command_type != "name_def":
+                return
+            content_data = self._read_bytes_from_command(command)
+            newdata = content_data[:4]+content_data[4:-1].decode(encoding='sjis').encode(encoding='gbk')+content_data[-1:]
+            self._append_new_namedef(command_offset,newdata)
