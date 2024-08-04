@@ -21,7 +21,8 @@ for filename in filelist:
         name = tran_json[i]['name']
         trans = tran_json[i]['post_zh_preview']
         #这里调节人名格式
-        trans = f"【{name}】{trans}"
+        if name != "":
+            trans = f"【{name}】{trans}"
         while True:
             l = ori_triline[p]
             if l[:4]=="TR1=":
