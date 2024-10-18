@@ -8,11 +8,11 @@ yuris引擎的处理工具，可以处理新版本（4.xx、5.xx）的一部分y
 
 ### 拆包
 
-使用garbro拆包，拆包时选择“尝试猜测”。将拆包得到的 `ybn`文件放入 `ysbin`文件夹。ysc\yscfg\yse\ysl\yst_list\yst\ysv件需要删除，否则后面可能出问题。这些文件里没有文本。
+使用garbro拆包，拆包时选择“尝试猜测”。将拆包得到的 `ybn`文件放入 `ysbin`文件夹。
 
 ### 文件筛选
 
-我只分析了文本相关的ysn文件，其他ysn文件可能会在后面的代码运行中导致bug，所以需要筛选文件。通过 `YSTB_GuessXorKey.exe`可以还原文件的原本路径和名称（本工具来自[ZQF-ReVN/RxYuris at f3d87c05e621789275e82cf73dfc24b9351d5380 (github.com)](https://github.com/ZQF-ReVN/RxYuris/tree/f3d87c05e621789275e82cf73dfc24b9351d5380)），可以筛选出游戏文本相关的文件，放入 `scr`文件夹中。
+我只分析了文本相关的ysn文件，其他ysn文件可能会在后面的代码运行中导致bug，所以需要筛选文件。通过 `YSTL_Parse.exe`可以还原文件的原本路径和名称（本工具来自[ZQF-ReVN/RxYuris at f3d87c05e621789275e82cf73dfc24b9351d5380 (github.com)](https://github.com/ZQF-ReVN/RxYuris/tree/f3d87c05e621789275e82cf73dfc24b9351d5380)），可以筛选出游戏文本相关的文件，放入 `scr`文件夹中。
 
 ```
 YSTL_Parse.exe -make
@@ -50,6 +50,8 @@ YSTB_GuessXorKey.exe ysbin_new/xxxxxx.ybn
 
 json文件在 `json_ori`文件夹中。
 
+文本的具体格式等内容随游戏变化较大，这部分建议自行根据具体游戏完成。
+
 ### 导入文本1
 
 如果使用了GalTransl进行机翻，使用 `json2triline.py`可以将Galtransl中 `trans_cache`里的文件重新生成翻译后的三行文本。将 `trans_cache`中的文件放入 `json_trans`文件夹中，运行代码。
@@ -59,6 +61,8 @@ json文件在 `json_ori`文件夹中。
 新的三行文本在 `triline_text_trans`中。
 
 如果没有使用机翻，人工翻译后的三行文本也放入这个文件夹。
+
+同样，文本的具体格式等内容随游戏变化较大，这部分建议自行根据具体游戏完成。
 
 ### 导入文本2
 

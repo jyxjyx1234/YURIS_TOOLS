@@ -16,8 +16,14 @@ class YSTB_command:
     def type(self) -> str:
         if self.opcode == b'\x00\x00\x00\x00':
             return "text"
-        if self.opcode == b'\x16\x00\x03\x00':
+        elif self.opcode == b'\x16\x00\x03\x00':
             return "sound"
+        elif self.opcode == b'\x00\x00\x03\x00':
+            return "may_be_opt"
+        elif self.opcode == b'\x21\x00\x03\x00':
+            return "name_def"
+        elif self.opcode == b'\x22\x00\x03\x00':
+            return "name_def"
         else:
             return "others"
 
@@ -103,8 +109,7 @@ class YSTB_FILE:
         while p < self.command_len:
             command = YSTB_command(bytes(self.commands[p : p + 12]))
             command.command_offset = p
-            if command.type() == "text":
-                self.command_list.append(command)
+            self.command_list.append(command)
             p += 12
 
     def _read_bytes_from_command(self, command: YSTB_command) -> bytes:
@@ -116,42 +121,71 @@ class YSTB_FILE:
 
     def dump_text_to_file(self, path):
         outputfile = open(path, "w", encoding="utf8")
+        opt_flag = False
         for command in self.command_list:
             command_offset = command.command_offset
             command_type = command.type()
             if command_type == "text":
                 data = self._read_bytes_from_command(command)
-                if data != None and data[0] != 0x4d:
+                if data != None and data[0] != 0x4d and data[0:2] != b'H\x03' and b"\x00" not in data and b"cg" not in data:
                     try:
+                        data = data.replace(b"\x87\x55", b"")
                         text = data.decode(encoding='sjis')
                     except:
                         text = data.decode(encoding='sjis',errors='ignore')
                         print(data)
+                        print(text)
+                        print(path)
                         print(0x20 + self.part1_len + command_offset)
                         print(0x20 + self.part1_len + self.command_len + command.content_offset)
                         continue
                     outputline = f'[{command_offset}]\nORI={text}\nTR1={text}\nTR2={text}\n'
                     outputfile.write(outputline)
-            '''
-            if command_type == "sound":
+            
+            if opt_flag:
+                data = self._read_bytes_from_command(command)[4:-1]
+                #print(data)
+                if data == b'':
+                    opt_flag = False
+                else:
+                    try:
+                        text = data.decode(encoding='sjis')
+                        outputline = f'[{command_offset}]opt\nORI={text}\nTR1={text}\nTR2={text}\n'
+                        outputfile.write(outputline)
+                    except:
+                        pass
+
+            if command_type == "may_be_opt":
                 data = self._read_bytes_from_command(command)
-                text = data[4:-1].decode(encoding='sjis')
-                outputline = f'#{text}\n'
-                outputfile.write(outputline)'''
+                if data == b'\x4D\x0C\x00\x22\x45\x53\x2E\x53\x45\x4C\x2E\x53\x45\x54\x22':
+                    opt_flag = True
+                    
         
 
     def append_trans(self,command_offset:int,trans:str):
         offset = len(self.strs) + len(self.append_region)
         #处理gbk不支持的符号
         trans = trans.replace("♪","").replace("#","＃").replace("〜","~").replace("@","＠")
-
+        trans = replace_halfwidth_with_fullwidth(trans)
+        
+        trans = trans.replace("≪","114514").replace("／","114515").replace("≫","114516")
         transdata = trans.encode(encoding='gbk')
+
+        transdata = transdata.replace("114514".encode('gbk'), "≪".encode("sjis")).replace("114515".encode('gbk'), "／".encode("sjis")).replace("114516".encode('gbk'), "≫".encode("sjis"))
 
         #处理特殊标识
         teshulist = ["＠","＃"]
         for i in teshulist:
             transdata = transdata.replace(i.encode(encoding='gbk'),i.encode(encoding='sjis'))
 
+        length = len(transdata)
+        self.append_region += transdata + b'\x00'
+        self.commands[command_offset+4:command_offset+12] = list(to_bytes(length,4) + to_bytes(offset,4))
+
+    def append_opt(self,command_offset:int,trans:str):
+        offset = len(self.strs) + len(self.append_region)
+        transdata = trans.encode(encoding='gbk')
+        transdata = b'\x4D' + to_bytes(len(transdata) + 2, 2) + b'\x22' + transdata + b'\x22'
         length = len(transdata)
         self.append_region += transdata + b'\x00'
         self.commands[command_offset+4:command_offset+12] = list(to_bytes(length,4) + to_bytes(offset,4))
@@ -180,5 +214,6 @@ class YSTB_NAMEDEF_FILE(YSTB_FILE):
             if command_type != "name_def":
                 return
             content_data = self._read_bytes_from_command(command)
+            print(content_data[4:-1].decode(encoding='sjis'))
             newdata = content_data[:4]+content_data[4:-1].decode(encoding='sjis').encode(encoding='gbk')+content_data[-1:]
             self._append_new_namedef(command_offset,newdata)
